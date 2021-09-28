@@ -1,0 +1,12 @@
+﻿@*TODO: Use Razor Syntax*@
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+<form action="/Jobs/Create" method="post">
+    Name: <input type="text" name="Name" placeholder="Name" />
+    Do after: <input type="datetime" name="DoAfter" placeholder="RRRR-MM-DD" />
+    <input type="submit" value="Add Task" />
+</form>

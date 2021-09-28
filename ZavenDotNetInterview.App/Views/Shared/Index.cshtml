@@ -1,0 +1,40 @@
+﻿@model List<ZavenDotNetInterview.App.Models.Job>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@Html.ActionLink("Create", "../Jobs/Create")
+@Html.ActionLink("Process", "../Jobs/Process")
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayName("Name")
+        </th>
+        <th>
+            @Html.DisplayName("Status")
+        </th>
+        <th></th>
+    </tr>
+   
+        @foreach (var job in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => job.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => job.Status)
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "../Jobs/Details", new { jobId = job.Id })
+                </td>
+            </tr>
+        }
+    
+
+
+</table>

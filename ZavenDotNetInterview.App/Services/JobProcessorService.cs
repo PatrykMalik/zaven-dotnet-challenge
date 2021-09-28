@@ -11,67 +11,110 @@ using ZavenDotNetInterview.App.Repositories;
 namespace ZavenDotNetInterview.App.Services
 {
     public class JobProcessorService : IJobProcessorService
-    {
-        private ZavenDotNetInterviewContext _ctx;
+    {        
         private IJobsRepository _jobsRepository;
-        private ILogsRepository _logsRepository;
-        public JobProcessorService(ZavenDotNetInterviewContext ctx, IJobsRepository jobsRepository, ILogsRepository logsRepository)
+        public JobProcessorService(IJobsRepository jobsRepository)
         {
-            _ctx = ctx;
             _jobsRepository = jobsRepository;
-            _logsRepository = logsRepository;
         }
 
         public void ProcessJobs()
         {
-            //IJobsRepository jobsRepository = new JobsRepository(_ctx);
-            var allJobs = _jobsRepository.GetAllJobs();
-            var jobsToProcess = allJobs.Where(x => (x.Status == JobStatus.New || x.Status == JobStatus.Failed)).ToList();
+            var jobsToProcess = GetJobsToProcess();
+            SetStatusInProgress(jobsToProcess);
+            Process(jobsToProcess);
+        }
 
-            //jobsToProcess.ForEach(job => job.ChangeStatus(JobStatus.InProgress));
-            foreach (var job in jobsToProcess)
+        private void SetStatusInProgress(List<Job> jobs)
+        {
+            foreach (var job in jobs)
             {
-                job.ChangeStatus(JobStatus.InProgress);
-                _logsRepository.CreateLog(job);
-            }
-            _ctx.SaveChanges();
-            var task = Parallel.ForEach(jobsToProcess, (currentjob) =>
-            {
-
-                new Task(async () =>
-                {
-                    var response = await ProcessJob(currentjob);
-                    //var result = response.Result;
-                    if (response)
-                    {
-                        currentjob.ChangeStatus(JobStatus.Done);
-                    }
-                    else
-                    {
-                        currentjob.ChangeStatus(JobStatus.Failed);
-                    }
-
-                }).Start();
-            });
-            if (task.IsCompleted)
-            {
-                _ctx.SaveChanges();
+                SetStatusOfJob(JobStatus.InProgress, job);
             }
         }
 
-        private async Task<bool> ProcessJob(Job job)
+        private void SetStatusOfJob( JobStatus newStatus, Job jobToProcess)
+        {
+                jobToProcess.ChangeStatus(newStatus);
+                _jobsRepository.Update(jobToProcess);
+        }
+
+        private List<Job> GetJobsToProcess()
+        {
+            var allJobs = _jobsRepository.Get();
+            return allJobs.Where(x =>
+                ((x.Status == JobStatus.New || x.Status == JobStatus.Failed)
+                && ((x.DoAfter == null) || (DateTime.Compare(DateTime.Parse(x.DoAfter.ToString()), DateTime.Today) <= 0))))
+                .ToList();
+        }
+
+        private void Process(List<Job> jobsToProcess)
+        {
+            //TODO: Async
+            foreach (var currentjob in jobsToProcess)
+            {
+                var response = ProcessJob(currentjob);
+
+                if (response)
+                {
+                    SetStatusOfJob(JobStatus.Done, currentjob);
+                }
+                else
+                {
+                    SetStatusOfJob(JobStatus.Failed, currentjob);
+                }
+
+            }            
+        }
+
+        private bool ProcessJob(Job job)
         {
             Random rand = new Random();
-            if (rand.Next(10) < 5)
+            if (rand.Next(10) < 5)            
             {
-                await Task.Delay(2000);
                 return false;
             }
             else
             {
-                await Task.Delay(1000);
                 return true;
             }
         }
+        //private async Task Preproces(List<Job> jobsToProcess)
+        //{
+        //    Parallel.ForEach(jobsToProcess, (currentjob) =>
+        //    {
+
+        //        new Task(() =>
+        //        {
+        //            var response =  this.ProcessJob(currentjob).ConfigureAwait(true);
+        //            var result = response.GetAwaiter();
+        //            if (result.GetResult())
+        //            {
+        //                currentjob.ChangeStatus(JobStatus.Done);
+        //            }
+        //            else
+        //            {
+        //                currentjob.ChangeStatus(JobStatus.Failed);
+        //            }
+        //            _logsRepository.CreateLog(currentjob);
+        //        }).Start();
+
+        //    });
+        //}
+
+        //private async Task<bool> ProcessJob(Job job)
+        //{
+        //    Random rand = new Random();
+        //    if (rand.Next(10) < 5)
+        //    {
+        //        await Task.Delay(2000);
+        //        return false;
+        //    }
+        //    else
+        //    {
+        //        await Task.Delay(1000);
+        //        return true;
+        //    }
+        //}
     }
 }

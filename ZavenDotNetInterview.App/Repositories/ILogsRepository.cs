@@ -6,8 +6,7 @@ namespace ZavenDotNetInterview.App.Repositories
 {
     public interface ILogsRepository
     {
-        List<Log> GetJobsLogs(Guid jobId);
-        Log InsertLog(Log log);
-        Log CreateLog(Job job);
+        List<Log> Get(Guid jobId);
+        Log Create(Job job);
     }
 }

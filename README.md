@@ -29,7 +29,7 @@ Zasady processowania Job'ów:
 1. Walidacja po stronie klienta oraz serwera
    - Data 'Do after' jest opcjonalna ale powinna być datą
    - Name jest wymagane i nie powinno być puste
-   - Nie może być dwóch Job'ów o takiej samej nazwie
+   - Nie może być dwóch Job'ów o takiej samej nazwie 
 2. Dodawanie Log'ów Job'a
    - Dodanie Job'a powinno być logowane(Nowy wpis w tabeli Logs z deskryptywnym opisem)
    - Kazda zmiana Statusu Job'a powinna być logowana(Nowy wpis w tabeli Logs z deskryptywnym opisem)

@@ -12,33 +12,37 @@ namespace ZavenDotNetInterview.App.Repositories
 {
     public class LogsRepository : ILogsRepository
     {
-        public LogsRepository()
+        private readonly ZavenDotNetInterviewContext _ctx;
+        public LogsRepository(ZavenDotNetInterviewContext ctx)
         {
+            _ctx = ctx;
         }
-        public Log CreateLog(Job job)
+        public Log Create(Job job)
         {
             return InsertLog(new Log { Id =  Guid.NewGuid(), CreatedAt = DateTime.UtcNow, Description = $"Job changed status to: {job.Status}", JobId = job.Id });
         }
-        public List<Log> GetJobsLogs(Guid jobId)
+        public List<Log> Get(Guid jobId)
         {
-            using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString))
-            {
-                var logs = connection.Query<Log>($"SELECT * FROM Logs WHERE JobId = {jobId}").ToList();
-                return logs;
-            }
+            return _ctx.Logs.Where(j => j.JobId == jobId).ToList();
+            //using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString))
+            //{
+            //    var logs = connection.Query<Log>($"SELECT * FROM Logs WHERE JobId = {jobId}").ToList();
+            //    return logs;
+            //}
         }
 
-        public Log InsertLog(Log log)
+        private Log InsertLog(Log log)
         {
-            using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString))
-            {
-                string sql = "INSERT INTO Logs (Id, Description, CreatedAt, JobId) Values (@Id, @Description, @CreatedAt, @JobId);";
+            return _ctx.Logs.Add(log);
+            //using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString))
+            //{
+            //    string sql = "INSERT INTO Logs (Id, Description, CreatedAt, JobId) Values (@Id, @Description, @CreatedAt, @JobId);";
 
-                log.CreatedAt = DateTime.UtcNow;
-                var newLog = connection.Execute(sql, new { Id = log.Id, Description = log.Description, CreatedAt = log.CreatedAt, JobId = log.JobId });
+            //    log.CreatedAt = DateTime.UtcNow;
+            //    var newLog = connection.Execute(sql, new { Id = log.Id, Description = log.Description, CreatedAt = log.CreatedAt, JobId = log.JobId });
 
-                return log;
-            }
+            //    return log;
+            //}
         }
     }
 }

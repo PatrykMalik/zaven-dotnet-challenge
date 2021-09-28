@@ -1,7 +1,84 @@
 ﻿@*TODO: Use Razor Syntax*@
+@model ZavenDotNetInterview.App.Models.Job
+
 @{
     ViewBag.Title = "Details";
 }
 
 <h2>Details</h2>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayName("Id")
+        </th>
+        <th>
+            @Html.DisplayName("Name")
+        </th>
+        <th>
+            @Html.DisplayName("Status")
+        </th>
+        <th>
+            @Html.DisplayName("Fail Counter")
+        </th>
+        <th>
+            @Html.DisplayName("Do After")
+        </th>
+        <th>
+            @Html.DisplayName("Last Update At")
+        </th>
+    </tr>
+    <tr>
+        <th>
+            @Html.DisplayName(Model.Id.ToString())
+        </th>
+        <th>
+            @Html.DisplayName(Model.Name)
+        </th>
+        <th>
+            @Html.DisplayName(Model.Status.ToString())
+        </th>
+        <th>
+            @Html.DisplayName(Model.FailCounter.ToString())
+        </th>
+        <th>
+            @Html.DisplayName(Model.DoAfter == null ? " " : Model.DoAfter.Value.Date.ToLongDateString())
+        </th>
+        <th>
+            @Html.DisplayName(Model.LastUpdatedAt == null ? " " : Model.LastUpdatedAt.Value.ToLongDateString() + " " + Model.LastUpdatedAt.Value.ToLongTimeString())
+        </th>
+    </tr>
+</table>
+<h3>Logs:</h3>
 
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayName("Log Id")
+        </th>
+        <th>
+            @Html.DisplayName("Description")
+        </th>
+        <th>
+            @Html.DisplayName("CreatedAt")
+        </th>
+    </tr>
+
+    @foreach (var log in Model.Logs)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => log.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => log.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => log.CreatedAt)
+            </td>
+            @*<td>
+                    @Html.ActionLink("Details", "Details", new { jobId = job.Id })
+                </td>*@
+        </tr>
+    }
+
+</table>

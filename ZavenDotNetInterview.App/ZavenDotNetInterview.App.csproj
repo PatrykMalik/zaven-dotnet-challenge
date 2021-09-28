@@ -155,6 +155,18 @@
     <Compile Include="Migrations\202109272116400_ModelUpdates.designer.cs">
       <DependentUpon>202109272116400_ModelUpdates.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202109280856011_LastUpdateAt.cs" />
+    <Compile Include="Migrations\202109280856011_LastUpdateAt.designer.cs">
+      <DependentUpon>202109280856011_LastUpdateAt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202109281144290_FailCounter.cs" />
+    <Compile Include="Migrations\202109281144290_FailCounter.designer.cs">
+      <DependentUpon>202109281144290_FailCounter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202109281157360_UtcNowDefaultLastUpdateAt.cs" />
+    <Compile Include="Migrations\202109281157360_UtcNowDefaultLastUpdateAt.designer.cs">
+      <DependentUpon>202109281157360_UtcNowDefaultLastUpdateAt.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Context\ZavenDotNetInterviewContext.cs" />
     <Compile Include="Models\Log.cs" />
@@ -183,7 +195,7 @@
     <Content Include="Views\Jobs\Create.cshtml" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
-    <Content Include="Views\Shared\Index.cshtml" />
+    <Content Include="Views\Jobs\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -204,6 +216,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202109272116400_ModelUpdates.resx">
       <DependentUpon>202109272116400_ModelUpdates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109280856011_LastUpdateAt.resx">
+      <DependentUpon>202109280856011_LastUpdateAt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109281144290_FailCounter.resx">
+      <DependentUpon>202109281144290_FailCounter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109281157360_UtcNowDefaultLastUpdateAt.resx">
+      <DependentUpon>202109281157360_UtcNowDefaultLastUpdateAt.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

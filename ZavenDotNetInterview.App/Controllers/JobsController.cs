@@ -14,18 +14,21 @@ namespace ZavenDotNetInterview.App.Controllers
     public class JobsController : Controller
     {
         private readonly IJobProcessorService _jobProcessorService;
-        public JobsController(IJobProcessorService jobProcessorService)
+        private IJobsRepository _jobsRepository;
+        private ILogsRepository _logsRepository;
+        public JobsController(IJobProcessorService jobProcessorService, IJobsRepository jobsRepository, ILogsRepository logsRepository)
         {
             _jobProcessorService = jobProcessorService;
+            _jobsRepository = jobsRepository;
+            _logsRepository = logsRepository;
         }
 
         // GET: Tasks
-        public  ActionResult Index()
+        public ActionResult Index()
         {
             using (ZavenDotNetInterviewContext _ctx = new ZavenDotNetInterviewContext())
-            {
-                JobsRepository jobsRepository = new JobsRepository(_ctx);
-                List<Job> jobs = jobsRepository.GetAllJobs();
+            {                
+                List<Job> jobs = new List<Job>( _jobsRepository.Get().OrderBy(x => x.CreatedAt));
                 return View(jobs);
             }
         }
@@ -51,13 +54,10 @@ namespace ZavenDotNetInterview.App.Controllers
         {
             try
             {
-                using (ZavenDotNetInterviewContext _ctx = new ZavenDotNetInterviewContext())
+                Job newJob = new Job() { Id = Guid.NewGuid(), DoAfter = doAfter, Name = name, Status = JobStatus.New };
+                if (_jobsRepository.Create(newJob))
                 {
-                    Job newJob = new Job() { Id = Guid.NewGuid(), DoAfter = doAfter, Name = name, Status = JobStatus.New };
-                    Log newLog = new Log() { Id = Guid.NewGuid(), Description = "New Job has been created", CreatedAt = DateTime.UtcNow, JobId = newJob.Id, Job = newJob };
-                    newJob = _ctx.Jobs.Add(newJob);
-                    newLog = _ctx.Logs.Add(newLog);
-                    _ctx.SaveChanges();
+                    _logsRepository.Create(newJob);
                 }
 
                 return RedirectToAction("Index");
@@ -70,7 +70,14 @@ namespace ZavenDotNetInterview.App.Controllers
 
         public ActionResult Details(Guid jobId)
         {
-            return View();
+            var job = _jobsRepository.Get(jobId);
+            if(job != null)
+            {
+                var orderedList = job.Logs.OrderBy(x => x.CreatedAt);
+                job.Logs = new List<Log>(orderedList);
+                return View(job);
+            }
+            return RedirectToAction("Index");
         }
     }
 }

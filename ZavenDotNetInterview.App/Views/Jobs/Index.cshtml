@@ -6,8 +6,8 @@
 
 <h2>Index</h2>
 
-@Html.ActionLink("Create", "../Jobs/Create")
-@Html.ActionLink("Process", "../Jobs/Process")
+@Html.ActionLink("Create", "Create")
+@Html.ActionLink("Process", "Process")
 
 <table class="table">
     <tr>
@@ -30,7 +30,7 @@
                     @Html.DisplayFor(modelItem => job.Status)
                 </td>
                 <td>
-                    @Html.ActionLink("Details", "../Jobs/Details", new { jobId = job.Id })
+                    @Html.ActionLink("Details", "Details", new { jobId = job.Id })
                 </td>
             </tr>
         }
